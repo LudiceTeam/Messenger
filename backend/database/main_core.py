@@ -54,4 +54,22 @@ async def is_user_exists(username:str) -> bool:
             return data is not None
         except Exception as e:
             raise Exception(f"Error : {e}")        
- 
+
+async def create_user_data(username:str,psw:str) -> bool:
+    if await is_user_exists(username):
+        return False 
+    async with AsyncSession(async_engine) as conn:
+        async with conn.begin():
+            try:
+                stmt = main_table.insert().values(
+                    username = username,
+                    password = psw,
+                    avatar = "",
+                    state = ""
+                )
+                await conn.execute(stmt)
+            except Exception as e:
+                raise Exception(f"Error : {e}")
+        
+        
+            
