@@ -70,6 +70,9 @@ async def create_user_data(username:str,psw:str) -> bool:
                 await conn.execute(stmt)
             except Exception as e:
                 raise Exception(f"Error : {e}")
+
+async def subscribe(username:str):
+    pass            
         
         
             
