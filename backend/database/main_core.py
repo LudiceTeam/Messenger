@@ -107,7 +107,11 @@ async def get_user_avatar(username:str) -> str:
             data = res.scalar_one_or_none()
             return str(data)
         except exc.SQLAlchemyError:
-            raise exc.SQLAlchemyError("Error while executing")            
+            raise exc.SQLAlchemyError("Error while executing")   
+
+async def get_user_state(username:str) -> str:
+    pass
+                 
         
         
             
