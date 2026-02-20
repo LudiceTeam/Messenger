@@ -77,9 +77,24 @@ async def change_user_avatar(username:str,new_avatar:str):
     async with AsyncSession(async_engine) as conn:
         async with conn.begin():
             try:
-                pass
+                stmt = main_table.update().where(main_table.c.username == username).values(
+                    avatar = new_avatar
+                )
+                await conn.execute(stmt)
             except  exc.SQLAlchemyError:
                 raise exc.SQLAlchemyError("Error while exeuting")   
+
+async def get_user_avatar(username:str) -> str:
+    if not await is_user_exists(username):
+        return
+    async with AsyncSession(async_engine) as conn:
+        try:
+            stmt = select(main_table.c.avatar).where(main_table.c.username == username)
+            res = await conn.execute(stmt)
+            data = res.scalar_one_or_none()
+            return str(data)
+        except exc.SQLAlchemyError:
+            raise exc.SQLAlchemyError("Error while executing")            
         
         
             
