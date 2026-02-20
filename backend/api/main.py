@@ -38,4 +38,3 @@ app = FastAPI()
 
 async def main():
     return "Messenger "
-

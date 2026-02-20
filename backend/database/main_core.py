@@ -69,7 +69,20 @@ async def create_user_data(username:str,psw:str) -> bool:
                 )
                 await conn.execute(stmt)
             except exc.SQLAlchemyError:
-                raise Exception(f"Error : {e}")
+                raise Exception("Error while executing")
+
+async def login(username:str,try_psw:str) -> bool:
+    if not await is_user_exists(username):
+        return False
+    async with AsyncSession(async_engine) as conn:
+        try:
+            stmt = select(main_table.c.password).where(main_table.c.username == username)
+            res = await conn.execute(stmt)
+            data = res.scalar_one_or_none()
+            return str(data) == try_psw
+        except exc.SQLAlchemyError:
+            raise exc.SQLAlchemyError("Error while executing")            
+            
 
 async def change_user_avatar(username:str,new_avatar:str):
     if not await is_user_exists(username):
