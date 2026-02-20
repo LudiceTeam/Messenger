@@ -111,7 +111,9 @@ async def get_user_avatar(username:str) -> str:
 
 async def get_user_state(username:str) -> str:
     pass
-                 
+
+async def change_user_state(username:str) -> str:
+    pass                 
         
         
             
