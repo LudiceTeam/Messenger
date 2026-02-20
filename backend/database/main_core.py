@@ -1,5 +1,5 @@
 from main_models import main_table,metadata_obj
-from sqlalchemy import select
+from sqlalchemy import select,exc
 from typing import Optional,List 
 import uuid
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
@@ -68,11 +68,18 @@ async def create_user_data(username:str,psw:str) -> bool:
                     state = ""
                 )
                 await conn.execute(stmt)
-            except Exception as e:
+            except exc.SQLAlchemyError:
                 raise Exception(f"Error : {e}")
 
-async def subscribe(username:str):
-    pass            
+async def change_user_avatar(username:str,new_avatar:str):
+    if not await is_user_exists(username):
+        return
+    async with AsyncSession(async_engine) as conn:
+        async with conn.begin():
+            try:
+                pass
+            except  exc.SQLAlchemyError:
+                raise exc.SQLAlchemyError("Error while exeuting")   
         
         
             
