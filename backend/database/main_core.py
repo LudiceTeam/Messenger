@@ -61,11 +61,12 @@ async def create_user_data(username:str,psw:str) -> bool:
     async with AsyncSession(async_engine) as conn:
         async with conn.begin():
             try:
+                date_now = str(datetime.now())
                 stmt = main_table.insert().values(
                     username = username,
                     password = psw,
                     avatar = "",
-                    state = ""
+                    state = date_now
                 )
                 await conn.execute(stmt)
             except exc.SQLAlchemyError:
@@ -110,7 +111,16 @@ async def get_user_avatar(username:str) -> str:
             raise exc.SQLAlchemyError("Error while executing")   
 
 async def get_user_state(username:str) -> str:
-    pass
+    if not await is_user_exists(username):
+        return
+    async with AsyncSession(async_engine) as conn:
+        try:
+            stmt = select(main_table.c.state).where(main_table.c.username == username)
+            res = await conn.execute(stmt)
+            data = res.scalar_one_or_none
+            return str(data) if data is not None else ""
+        except exc.SQLAlchemyError:
+            raise exc.SQLAlchemyError("Error while executing")
 
 async def change_user_state(username:str) -> str:
     pass                 
