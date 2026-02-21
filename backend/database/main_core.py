@@ -72,6 +72,9 @@ async def create_user_data(username:str,psw:str) -> bool:
             except exc.SQLAlchemyError:
                 raise Exception("Error while executing")
 
+async def search_user(search:str) -> str:
+    pass            
+
 async def login(username:str,try_psw:str) -> bool:
     if not await is_user_exists(username):
         return False
